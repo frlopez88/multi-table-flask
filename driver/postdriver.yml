@@ -1,0 +1,22 @@
+info:
+  name: postdriver
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:5000/driver
+  body:
+    type: json
+    data: |-
+      {
+        "license_type": "Heavy Weight",
+        "name": "Jerod"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

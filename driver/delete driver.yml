@@ -1,0 +1,14 @@
+info:
+  name: delete driver
+  type: http
+
+http:
+  method: DELETE
+  url: http://127.0.0.1:5000/driver/3
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
