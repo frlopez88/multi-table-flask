@@ -2,14 +2,14 @@ from flask import  Flask , jsonify, request, Blueprint
 from psycopg2.extras import RealDictCursor
 import database
 
-vehicle = Blueprint("vehicle", __name__)
+center = Blueprint("center", __name__)
 
-@vehicle.route("/")
-def get_vehicle():
+@center.route("/")
+def get_center():
     conn = database.get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-                select * from vehicle
+                select * from center
             """)
     rows = cur.fetchall()
     cur.close()
@@ -18,29 +18,29 @@ def get_vehicle():
     return jsonify(rows)
     
 
-@vehicle.route("/", methods=["POST"])
-def create_vehicle():
+@center.route("/", methods=["POST"])
+def create_center():
     conn = database.get_connection()
     cur = conn.cursor()
     data = request.get_json()
     cur.execute("""
-                insert into vehicle
-                    (license_plate, model, capacity, driver_id)
-                values (%s, %s, %s,%s)
-            """, ( data["license_plate"], data["model"], data["capacity"], data["driver_id"] ))
+                insert into center
+                    (city, driver_id)
+                values (%s, %s, %s)
+            """, ( data["weight"],  data["driver_id"] ))
     conn.commit()
     cur.close()
     conn.close()
 
     return jsonify({"message": "Object Created"}), 201
 
-@vehicle.route("/<string:id>", methods=["DELETE"])
+@center.route("/<string:id>", methods=["DELETE"])
 def delete_driver(id):
     conn = database.get_connection()
     cur = conn.cursor()
 
     cur.execute("""
-                delete from vehicle where license_plate = %s
+                delete from center where center_id = %s
             """, ( id, ))
     
     conn.commit()
@@ -50,20 +50,19 @@ def delete_driver(id):
     return jsonify({"message": "Object Deleted"}), 201
 
 
-@vehicle.route("/<string:id>", methods=["PUT"])
+@center.route("/<string:id>", methods=["PUT"])
 def update_driver(id):
     conn = database.get_connection()
     cur = conn.cursor()
     data = request.get_json()
     cur.execute("""
                 
-                update vehicle 
-                set model = %s, 
-                    capacity = %s, 
+                update center 
+                set city = %s
                     driver_id = %s
-                where license_plate = %s 
+                where center_id = %s 
 
-            """, ( data["model"],data["capacity"],  data["driver_id"], id ))
+            """, ( data["city"],  data["driver_id"], id ))
     
     conn.commit()
     cur.close()

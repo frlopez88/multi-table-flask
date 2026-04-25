@@ -2,14 +2,14 @@ from flask import  Flask , jsonify, request, Blueprint
 from psycopg2.extras import RealDictCursor
 import database
 
-vehicle = Blueprint("vehicle", __name__)
+pass_bp = Blueprint("pass_bp", __name__)
 
-@vehicle.route("/")
-def get_vehicle():
+@pass_bp.route("/")
+def get_pass_bp():
     conn = database.get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("""
-                select * from vehicle
+                select * from pass
             """)
     rows = cur.fetchall()
     cur.close()
@@ -18,29 +18,29 @@ def get_vehicle():
     return jsonify(rows)
     
 
-@vehicle.route("/", methods=["POST"])
-def create_vehicle():
+@pass_bp.route("/", methods=["POST"])
+def create_pass_bp():
     conn = database.get_connection()
     cur = conn.cursor()
     data = request.get_json()
     cur.execute("""
-                insert into vehicle
-                    (license_plate, model, capacity, driver_id)
-                values (%s, %s, %s,%s)
-            """, ( data["license_plate"], data["model"], data["capacity"], data["driver_id"] ))
+                insert into pass
+                    (tracking_number, center_id, date)
+                values (%s, %s, %s)
+            """, ( data["tracking_number"], data["center_id"], data["date"] ))
     conn.commit()
     cur.close()
     conn.close()
 
     return jsonify({"message": "Object Created"}), 201
 
-@vehicle.route("/<string:id>", methods=["DELETE"])
+@pass_bp.route("/<string:id>", methods=["DELETE"])
 def delete_driver(id):
     conn = database.get_connection()
     cur = conn.cursor()
 
     cur.execute("""
-                delete from vehicle where license_plate = %s
+                delete from pass where pass_id = %s
             """, ( id, ))
     
     conn.commit()
@@ -50,20 +50,20 @@ def delete_driver(id):
     return jsonify({"message": "Object Deleted"}), 201
 
 
-@vehicle.route("/<string:id>", methods=["PUT"])
+@pass_bp.route("/<string:id>", methods=["PUT"])
 def update_driver(id):
     conn = database.get_connection()
     cur = conn.cursor()
     data = request.get_json()
     cur.execute("""
                 
-                update vehicle 
-                set model = %s, 
-                    capacity = %s, 
-                    driver_id = %s
-                where license_plate = %s 
+                update pass 
+                set tracking_number = %s, 
+                    center_id = %s, 
+                    date = %s
+                where pass_id = %s 
 
-            """, ( data["model"],data["capacity"],  data["driver_id"], id ))
+            """, ( data["tracking_number"],data["center_id"],  data["date"], id ))
     
     conn.commit()
     cur.close()
