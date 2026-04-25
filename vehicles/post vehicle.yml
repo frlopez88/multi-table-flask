@@ -1,0 +1,24 @@
+info:
+  name: post vehicle
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:5000/vehicle
+  body:
+    type: json
+    data: |-
+      {
+        "license_plate": "023SA",
+        "model" : "Civic", 
+        "capacity" : "100",
+        "driver_id" : 4
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
